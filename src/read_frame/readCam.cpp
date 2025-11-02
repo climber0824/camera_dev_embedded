@@ -15,6 +15,7 @@ private:
     string windowName;
     VideoCapture cap;
     int time_sleep = 10;
+    float motion_thresh = 3;    // in percentage
     bool running;
     bool show_image = false;
     bool save_image = true;
@@ -32,7 +33,7 @@ private:
         return ss.str();
     }
 
-    Mat edgeDetection(Mat origin_frame) {
+    Mat edgeDetection(const Mat& origin_frame) {
         Mat gray, filtered;
 
         // convert to grayscale
@@ -52,8 +53,24 @@ private:
         return filtered;
     }
 
+    // motion detection
+    bool detectMotion(const Mat& prev, const Mat& curr, float motion_thresh) {
+        if (prev.empty() || curr.empty())
+            return false;
 
+        Mat diff, gray, thresh;
+        absdiff(prev, curr, diff);                  // frame difference
+        cvtColor(diff, gray, COLOR_BGR2GRAY);       // convert to grayscale
+        GaussianBlur(gray, gray, Size(5, 5), 0);    // reduce noise
+        threshold(gray, thresh, 25, 255, THRESH_BINARY);    // binary mask;
 
+        // count non-zero pixels (amount of motion)
+        float motionPercent = (countNonZero(thresh) * 100.0) /
+                                (thresh.rows * thresh.cols);
+
+        printf("motion percent: %f\n", motionPercent);
+        return motionPercent > motion_thresh;
+    }
 
 
 public:
@@ -75,7 +92,7 @@ public:
 
     void process() {
         running = true;
-        Mat frame;
+        Mat frame, prevFrame;
 
         while (running) {
             cap >> frame;
@@ -84,6 +101,14 @@ public:
                 cerr << "Warning: No frame captured from: " << source << endl;
                 break;
             }
+
+            bool has_motion = detectMotion(prevFrame, frame, motion_thresh);
+            if (has_motion) {
+                cout << "[" << windowName << "] motion detected!" << endl;
+            }
+
+            frame.copyTo(prevFrame);
+
 
             if (save_image) {
                 string filename = getTimestampFilename("");
@@ -103,7 +128,7 @@ public:
             }
 
             if (show_image) {
-                imshow(windowName, filtered);
+                imshow(windowName, frame);
 
                 // exit when press ESC
                 if (waitKey(1) == 27) {
