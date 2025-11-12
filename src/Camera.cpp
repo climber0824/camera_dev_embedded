@@ -363,3 +363,98 @@ void Camera::setFocusPosition(int position) {
 AFSettings Camera::getAFSettings() const {
     return afSettings;
 }
+
+
+// combined 3A tuning //
+bool Camera::run3ATuning() {
+    if (currFrame.empty()) {
+        return false;
+    }
+
+    bool success = true;
+
+    // run AF first (affects overall image brightness)
+    if (aeSettings.autoExposure) {
+        success &= tuneAutoExposure();
+    }
+
+    // run AWB (affects color balance)
+    if (awbSettings.autoWhiteBalance) {
+        success &= tuneAutoWhiteBalance();
+        applyWhiteBalance(currFrame);
+    }
+
+    // run AF last (affects sharpness)
+    if (afSettings.autoFocus) {
+        success &= tuneAutoFocus();        
+    }
+
+    return success;
+}
+
+
+void Camera::reset3ASettings() {
+    // Reset to defaults
+    aeSettings.autoExposure = true;
+    aeSettings.exposure = -6.0;
+    aeSettings.targetBrightness = 128.0;
+    aeSettings.exposureCompensation = 0.0;
+
+    awbSettings.autoWhiteBalance = true;
+    awbSettings.colorTemperature = 5500.0;
+    awbSettings.redGain = 1.0;
+    awbSettings.blueGain = 1.0;
+
+    afSettings.autoFocus = true;
+    afSettings.focusPosition = 128;
+    afSettings.focusScore = 0.0;
+
+    exposureHistory.clear();
+    brightnessHistory.clear();
+}
+
+
+// helper functions //
+void Camera::updateHistory(std::vector<double> &history, double value) {
+    history.push_back(value);
+    if (history.size() > maxHistorySize) {
+        history.erase(history.begin());
+    }
+}
+
+
+double Camera::calculateMovingAverage(const std::vector<double> &history, int window) {
+    if (history.empty()) {
+        return 0.0;
+    }
+
+    int start = std::max(0, (int)history.size() - window);
+    int count = history.size() - start;
+
+    double sum = 0.0;
+    for (int i = start; i < history.size(); i++) {
+        sum += history[i];
+    }
+
+    return count == 0 ? 0.0 : sum / count;
+}
+
+
+cv::Mat Camera::convertToGray(const cv::Mat &frame) {
+    if (frame.empty()) {
+        return cv::Mat();
+    }
+
+    cv::Mat gray;
+    if (frame.channels() == 3) {
+        cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
+    }
+    else if (frame.channels() == 4) {
+        cv::cvtColor(frame, gray, cv::COLOR_BGRA2GRAY);
+    }
+    else {
+        gray = frame.clone();
+    }
+
+    return gray;
+}
