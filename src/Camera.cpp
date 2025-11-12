@@ -277,3 +277,89 @@ void Camera::setColorTemperature(double temperature) {
 AWBSettings Camera::getAWBSettings() const {
     return awbSettings;
 }
+
+
+// auto focus (AF) implementation //
+void Camera::enableAutoFocus(bool enable) {
+    afSettings.autoFocus = enable;
+}
+
+
+bool Camera::tuneAutoFocus() {
+    if (!afSettings.autoFocus || currFrame.empty()) {
+        return false;
+    }
+
+    // find optimal focus position
+    int optimalFocus = findOptimalFocus();
+    afSettings.focusPosition = optimalFocus;
+    afSettings.focusScore = calculateFocusScore(currFrame);
+
+    return true;
+}
+
+
+double Camera::calculateFocusScore(const cv::Mat &frame) {
+    if (frame.empty()) {
+        return 0.0;
+    }
+
+    cv::Mat gray = convertToGray(frame);
+
+    // use Laplacian variance as focus metric
+    cv::Mat laplacian;
+    cv::Laplacian(gray, laplacian, CV_64F);
+
+    cv::Scalar mean, stddev;
+    cv::meanStdDev(laplacian, mean, stddev);
+
+    // variance of Laplacian
+    double focusScore = stddev[0] * stddev[0];
+
+    return focusScore;
+}
+
+
+int Camera::findOptimalFocus() {
+    // simplified hill-climbing algorithm
+    // in real hardware, you would step through focus positions
+
+    const int minFocus = 0;
+    const int maxFocus = 255;
+    const int stepSize = 10;
+    
+    int currPos = afSettings.focusPosition;
+    double currScore = calculateFocusScore(currFrame);
+
+    // try moving in both directions
+    int testPos1 = std::max(minFocus, currPos - stepSize);
+    int testPos2 = std::min(maxFocus, currPos + stepSize);
+    
+    // in real implementation, you need:
+    // 1. set focus to testPos1
+    // 2. capture frame
+    // 3. calculate score
+    // 4. repeat for testPos2
+    // 5. move toward better score
+
+    // for simulation, assume current position is near optimal
+    // and make small adjustments
+    if (currScore < 100.0) {    // arbitrary threshold
+        return testPos2;        // try increasing focus
+    }
+    else if (currScore > 1000.0) {
+        return testPos1;        // try decreasing focus
+    }
+
+    return currPos;
+}
+
+
+void Camera::setFocusPosition(int position) {
+    afSettings.focusPosition = std::max(0, std::min(255, position));
+}
+
+
+AFSettings Camera::getAFSettings() const {
+    return afSettings;
+}
