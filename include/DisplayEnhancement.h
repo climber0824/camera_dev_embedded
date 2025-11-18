@@ -6,10 +6,10 @@
 #include <opencv2/opencv.hpp>
 
 
-class DisplayEnhencement {
+class DisplayEnhancement {
 public:
-    DisplayEnhencement();
-    ~DisplayEnhencement();
+    DisplayEnhancement();
+    ~DisplayEnhancement();
 
     cv::Mat enhanceContrast(const cv::Mat &src, double alpha, int beta);
     cv::Mat enhanceSharpness(const cv::Mat &src, double amount);

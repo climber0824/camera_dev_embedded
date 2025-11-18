@@ -13,9 +13,9 @@ g++ display_enhancement.cpp -o display_enhancement $(pkg-config --cflags --libs 
 #include "DisplayEnhancement.h"
 
 
-DisplayEnhencement::DisplayEnhencement() {}
+DisplayEnhancement::DisplayEnhancement() {}
 
-DisplayEnhencement::~DisplayEnhencement() {}
+DisplayEnhancement::~DisplayEnhancement() {}
 
 /**
  * @brief 1. Enhances contrast using alpha (contrast) and beta (brightness).
@@ -23,7 +23,7 @@ DisplayEnhencement::~DisplayEnhencement() {}
  * out = alpha * in + beta
  */
 
-cv::Mat DisplayEnhencement::enhanceContrast(const cv::Mat &src, double alpha, int beta) {
+cv::Mat DisplayEnhancement::enhanceContrast(const cv::Mat &src, double alpha, int beta) {
     cv::Mat enhanced_img;
     
     // -1 for output type means the same as the input (src.type())
@@ -38,7 +38,7 @@ cv::Mat DisplayEnhencement::enhanceContrast(const cv::Mat &src, double alpha, in
  * Sharpened = Original + (Original - Blurred) * amount
  */
 
-cv::Mat DisplayEnhencement::enhanceSharpness(const cv::Mat &src, double amount) {
+cv::Mat DisplayEnhancement::enhanceSharpness(const cv::Mat &src, double amount) {
     cv::Mat enhanced_img;
     cv::Mat blurred;
 
@@ -57,7 +57,7 @@ cv::Mat DisplayEnhencement::enhanceSharpness(const cv::Mat &src, double amount) 
  * We convert to HSV, scale the 'S' channel, and convert back.
  */
 
-cv::Mat DisplayEnhencement::enhanceSaturation(const cv::Mat &src, double factor) {
+cv::Mat DisplayEnhancement::enhanceSaturation(const cv::Mat &src, double factor) {
     cv::Mat hsv_img;
     // convert from BGR to HSV
     cv::cvtColor(src, hsv_img, cv::COLOR_BGR2HSV);
