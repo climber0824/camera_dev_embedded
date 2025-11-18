@@ -26,7 +26,9 @@ surveillance_system/
 │   ├── CameraManager.h        # Camera lifecycle management
 │   ├── MotionDetector.h       # Motion detection algorithms
 │   ├── VideoRecorder.h        # Video recording functionality
+│   ├── DisplayEnhancement.h   # Enhance frame for displaying
 │   └── SurveillanceSystem.h   # Main system coordinator
+│    
 │
 ├── src/                        # Implementation files
 │   ├── Camera.cpp
@@ -35,6 +37,7 @@ surveillance_system/
 │   ├── CameraManager.cpp
 │   ├── MotionDetector.cpp
 │   ├── VideoRecorder.cpp
+│   ├── DisplayEnhancement.cpp
 │   └── SurveillanceSystem.cpp
 │
 ├── examples/                   # Example applications
