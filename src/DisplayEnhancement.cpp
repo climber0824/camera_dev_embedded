@@ -87,35 +87,39 @@ cv::Mat DisplayEnhancement::enhanceSaturation(const cv::Mat &src, double factor)
     return enhanced_img;
 }
 
+// test section //
+#if 0
+    int main(int argc, char** argv) {
+        std::string filename = "input_img.png";     // default name
+        if (argc > 1) {
+            filename = argv[1];
+        }
 
-int main(int argc, char** argv) {
-    std::string filename = "input_img.png";     // default name
-    if (argc > 1) {
-        filename = argv[1];
+        cv::Mat img = cv::imread(filename);
+        if (img.empty()) {
+            std::cerr << "Error: could not load image: " << filename << std::endl;
+            return 1;
+        }
+
+        DisplayEnhancement de;
+
+        // apply contract enhancement
+        // alpha > 1.0: increase contrast, beta = brightness
+        cv::Mat contrast_img = de.enhanceContrast(img, 1.2, 10);
+        cv::imwrite("contrast.png", contrast_img);
+
+        // apply sharpening
+        // a small amount (0.5 ~ 1.5) is usually best
+        cv::Mat sharp_img = de.enhanceSharpness(img, 0.8);
+        cv::imwrite("sharpness.png", sharp_img);
+
+        // apply saturation boost
+        // 1.0: no change, 1.5: 50% more saturation
+        cv::Mat saturation_img = de.enhanceSaturation(img, 1.5);
+        cv::imwrite("saturation.png", saturation_img);
+
+        std::cout << "Image enhancements complete." << std::endl;
+
+        return 0;
     }
-
-    cv::Mat img = cv::imread(filename);
-    if (img.empty()) {
-        std::cerr << "Error: could not load image: " << filename << std::endl;
-        return 1;
-    }
-
-    // apply contract enhancement
-    // alpha > 1.0: increase contrast, beta = brightness
-    cv::Mat contrast_img = enhanceContrast(img, 1.2, 10);
-    cv::imwrite("contrast.png", contrast_img);
-
-    // apply sharpening
-    // a small amount (0.5 ~ 1.5) is usually best
-    cv::Mat sharp_img = enhanceSharpness(img, 0.8);
-    cv::imwrite("sharpness.png", sharp_img);
-
-    // apply saturation boost
-    // 1.0: no change, 1.5: 50% more saturation
-    cv::Mat saturation_img = enhanceSaturation(img, 1.5);
-    cv::imwrite("saturation.png", saturation_img);
-
-    std::cout << "Image enhancements complete." << std::endl;
-
-    return 0;
-}
+#endif

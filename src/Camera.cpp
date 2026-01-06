@@ -29,7 +29,7 @@ cv::Mat Camera::getFrame() const {
 }
 
 
-str::string Camera::getId() const {
+std::string Camera::getId() const {
     return id;
 }
 
@@ -129,7 +129,7 @@ double Camera::calculateOptimalExposure(double currBrightness, double targetBrig
     evAdjustment = std::max(-maxAdjustment, std::min(maxAdjustment, evAdjustment));
 
     // apply adjustment to current exposure
-    double newExposure = aeSetting.exposure + evAdjustment;
+    double newExposure = aeSettings.exposure + evAdjustment;
 
     // clamp to valid range
     newExposure = std::max(-13.0, std::min(-1.0, newExposure));
@@ -153,7 +153,7 @@ void Camera::setExposureCompensation(double compensation) {
 }
 
 
-AESettings Camera::getSettings() const {
+AESettings Camera::getAESettings() const {
     return aeSettings;
 }
 
@@ -238,7 +238,7 @@ void Camera::applyWhiteBalance(cv::Mat &frame) {
 
     // apply gains: BGR format
     channels[2] *= awbSettings.redGain;     // red channel
-    chanenls[0] *= awbSettings.blueGain;    // blue channel
+    channels[0] *= awbSettings.blueGain;    // blue channel
 
     // clip values to valid range
     channels[0] = cv::min(channels[0], 255.0);
@@ -249,8 +249,8 @@ void Camera::applyWhiteBalance(cv::Mat &frame) {
 
 
 void Camera::setWhiteBalanceGains(double redGain, double blueGain) {
-    awbSetting.redGain = std::max(0.5, std::min(4.0, redGain));
-    awbSetting.blueGain = std::max(0.5, std::min(4.0, blueGain));
+    awbSettings.redGain = std::max(0.5, std::min(4.0, redGain));
+    awbSettings.blueGain = std::max(0.5, std::min(4.0, blueGain));
 }
 
 

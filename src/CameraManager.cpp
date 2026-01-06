@@ -11,7 +11,7 @@ CameraManager::~CameraManager() {
 }
 
 
-bool CamaraManager::addCamera(std::shared_ptr<Camera> camera) {
+bool CameraManager::addCamera(std::shared_ptr<Camera> camera) {
     std::lock_guard<std::mutex> lock(cameraMutex);
 
     if (!camera) {
@@ -31,7 +31,7 @@ bool CamaraManager::addCamera(std::shared_ptr<Camera> camera) {
 }
 
 
-bool CamaraManager::removeCamera(const std::string &id) {
+bool CameraManager::removeCamera(const std::string &id) {
     std::lock_guard<std::mutex> lock(cameraMutex);
 
     auto it = cameras.find(id);
@@ -40,14 +40,14 @@ bool CamaraManager::removeCamera(const std::string &id) {
     }
 
     it->second->disconnect();
-    camares.erase(it);
+    cameras.erase(it);
     std::cout << "Camera " << id << " removed from manager" << std::endl;
 
     return true;
 }
 
 
-std::shared_ptr<Camera> CamaraManager::getCamera(const std::string &id) {
+std::shared_ptr<Camera> CameraManager::getCamera(const std::string &id) {
     std::lock_guard<std::mutex> lock(cameraMutex);
 
     auto it = cameras.find(id);
@@ -59,7 +59,7 @@ std::shared_ptr<Camera> CamaraManager::getCamera(const std::string &id) {
 }
 
 
-std::vector<std::shared_ptr<Camera>> CamaraManager::getAllCameras() {
+std::vector<std::shared_ptr<Camera>> CameraManager::getAllCameras() {
     std::lock_guard<std::mutex> lock(cameraMutex);
 
     std::vector<std::shared_ptr<Camera>> res;
@@ -71,14 +71,14 @@ std::vector<std::shared_ptr<Camera>> CamaraManager::getAllCameras() {
 }
 
 
-bool CamaraManager::connectAll() {
+bool CameraManager::connectAll() {
     std::lock_guard<std::mutex> lock(cameraMutex);
     bool success = true;
 
     for (auto &cam : cameras) {
         if (!cam.second->connect()) {
             success = false;
-            std::cerr << "Camera ID: " << cam->first << " not connected" << std::endl;
+            std::cerr << "Camera ID: " << cam.first << " not connected" << std::endl;
         }        
     }
 
@@ -86,14 +86,14 @@ bool CamaraManager::connectAll() {
 }
 
 
-bool CamaraManager::disconnectAll() {
+bool CameraManager::disconnectAll() {
     std::lock_guard<std::mutex> lock(cameraMutex);
 
     bool success = true;
     for (auto &cam : cameras) {
         if (!cam.second->disconnect()) {
             success = false;
-            std::cerr << "Camera ID: " << cam->first << " not disconnected" << std::endl;
+            std::cerr << "Camera ID: " << cam.first << " not disconnected" << std::endl;
         }
     }
 
@@ -101,13 +101,13 @@ bool CamaraManager::disconnectAll() {
 }
 
 
-int CamaraManager::getCameraCount const {
+int CameraManager::getCameraCount() const {
     return cameras.size();
 }
 
 
-std::vector<std::string> CamaraManager::getCameraIds() const {
-    std::vector<str::string> ids;
+std::vector<std::string> CameraManager::getCameraIds() const {
+    std::vector<std::string> ids;
 
     for (const auto &cam : cameras) {
         ids.push_back(cam.first);

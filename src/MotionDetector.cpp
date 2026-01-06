@@ -49,7 +49,7 @@ bool MotionDetector::detectMotion(const cv::Mat &currFrame) {
 
     // find contours
     std::vector<std::vector<cv::Point>> contours;
-    cv::findContours(thresh, contour, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+    cv::findContours(thresh, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
     // check if any contour is larger than  minium area
     bool motionDetected = false;
@@ -147,7 +147,7 @@ void MotionDetector::setThreshold(int thresh) {
 }
 
 
-void MotionDetector::setMinArea(int area) {
+void MotionDetector::setMinArea(double area) {
     this->minArea = std::max(0.0, area);
 }
 

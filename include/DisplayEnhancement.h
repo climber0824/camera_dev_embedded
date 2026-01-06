@@ -14,6 +14,6 @@ public:
     cv::Mat enhanceContrast(const cv::Mat &src, double alpha, int beta);
     cv::Mat enhanceSharpness(const cv::Mat &src, double amount);
     cv::Mat enhanceSaturation(const cv::Mat &src, double factor);
-}
+};
 
 #endif

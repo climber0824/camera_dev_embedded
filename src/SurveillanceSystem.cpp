@@ -4,7 +4,7 @@
 #include "SurveillanceSystem.h"
 
 
-SurveillanceSystem::SurveillanceSystem::() : running(false) {}
+SurveillanceSystem::SurveillanceSystem() : running(false) {}
 
 
 SurveillanceSystem::~SurveillanceSystem() {
@@ -13,7 +13,7 @@ SurveillanceSystem::~SurveillanceSystem() {
 
 
 bool SurveillanceSystem::addCamera(std::shared_ptr<Camera> cam) {
-    if (!camera) {
+    if (!cam) {
         return false;
     }
 
@@ -258,7 +258,7 @@ void SurveillanceSystem::displayAllCameras() {
 
     std::vector<std::string> windowNames;
     for (const auto &cam : cameras) {
-        str::string windowName = "Camera: " + cam->getId();
+        std::string windowName = "Camera: " + cam->getId();
         cv::namedWindow(windowName, cv::WINDOW_NORMAL);
         windowNames.push_back(windowName);
     }
@@ -273,7 +273,7 @@ void SurveillanceSystem::displayAllCameras() {
                 // draw motion regions
                 auto motionIt = motionDetectors.find(camId);
                 if (motionIt != motionDetectors.end()) {
-                    auto regions = motionIt->second.getMotionRegions;
+                    auto regions = motionIt->second.getMotionRegions(frame);
                     for (const auto &rect : regions) {
                         cv::rectangle(frame, rect, cv::Scalar(0, 255, 0), 2);
                     }

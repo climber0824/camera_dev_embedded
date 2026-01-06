@@ -27,7 +27,7 @@ public:
 
     // camera management
     bool addCamera(std::shared_ptr<Camera> camera);
-    bool removeCamera(const std:: &id);
+    bool removeCamera(const std::string &id);
 
     // motion detection
     bool enableMotionDetection(const std::string &camId, int threshold=25);
@@ -40,11 +40,11 @@ public:
     // system control
     bool start();
     bool stop();
-    bool isRunning const();
+    bool isRunning() const;
 
     // display
     void displayCamera(const std::string &camId);
     void displayAllCameras();
-}
+};
 
 #endif

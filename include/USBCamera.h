@@ -7,7 +7,7 @@
 class USBCamera : public Camera {
 private:
     int deviceIndex;
-    cv::VideoCaputure capture;
+    cv::VideoCapture capture;
 
 public:
     USBCamera(const std::string &id, const std::string &name, int deviceIndex = 0);

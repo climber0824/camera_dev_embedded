@@ -3,7 +3,7 @@
 
 #include <string.h>
 #include <memory>
-#include <opevcv2/opencv.hpp>
+#include <opencv2/opencv.hpp>
 
 
 // 3A setting structures
@@ -77,7 +77,7 @@ public:
     // auto exposure (AE)
     void enableAutoExposure(bool enable);
     bool tuneAutoExposure();
-    double calculateFrameBrightness(const cv::)
+    double calculateFrameBrightness(const cv::Mat &frame);
     double calculateOptimalExposure(double currBrightness, double targetBrightness);
     void setExposure(double exposure);
     void setTargetBrightness(double brightness);
@@ -87,7 +87,7 @@ public:
     // auto white balance (AWB)
     void enableAutoWhiteBalance(bool enable);
     bool tuneAutoWhiteBalance();
-    void estimateColorTemperature(const cv::MAT &frame, double &temp, double &redGain, double &blueGain);
+    void estimateColorTemperature(const cv::Mat &frame, double &temp, double &redGain, double &blueGain);
     void applyWhiteBalance(cv::Mat &frame);
     void setWhiteBalanceGains(double redGain, double blueGain);
     void setColorTemperature(double temperature);

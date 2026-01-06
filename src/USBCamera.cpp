@@ -17,14 +17,14 @@ bool USBCamera::connect() {
     }
 
     capture.open(deviceIndex);
-    if (!capture.isOpen()) {
+    if (!capture.isOpened()) {
         std::cerr << "Failed to open USB camera " << deviceIndex << std::endl;
         return false;
     }
 
     capture.set(cv::CAP_PROP_FRAME_WIDTH, width);
     capture.set(cv::CAP_PROP_FRAME_HEIGHT, height);
-    capture.set(cv::CAP_PROP_FRAME_FPS, fps);
+    capture.set(cv::CAP_PROP_FPS, fps);
 
     isConnected = true;
     std::cout << "USB cam " << name << " connected" << std::endl;
