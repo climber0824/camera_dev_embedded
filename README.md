@@ -16,7 +16,7 @@ A C++ surveillance system supporting USB and IP cameras with motion detection.
 surveillance_system/
 │
 ├── README.md
-├── CMakeLists.txt
+├── Makefile
 ├── LICENSE
 │
 ├── include/                    # Header files
@@ -31,6 +31,7 @@ surveillance_system/
 │    
 │
 ├── src/                        # Implementation files
+│   ├── main.cpp
 │   ├── Camera.cpp
 │   ├── USBCamera.cpp
 │   ├── IPCamera.cpp
@@ -40,21 +41,11 @@ surveillance_system/
 │   ├── DisplayEnhancement.cpp
 │   └── SurveillanceSystem.cpp
 │
-├── examples/                   # Example applications
-│   ├── main.cpp               # Basic usage example
-│   ├── multi_camera.cpp       # Multi-camera monitoring
-│   └── motion_recording.cpp   # Motion-triggered recording
 │
 ├── tests/                      # Unit tests
-│   ├── test_camera.cpp
-│   ├── test_manager.cpp
-│   └── test_motion.cpp
-│
-├── docs/                       # Documentation
-│   ├── API.md
-│   ├── ARCHITECTURE.md
-│   └── USAGE.md
-│
+│   ├── capture_jpeg.c
+│   └── save_image_with_time_interval.cpp
+│   
 └── build/                      # Build output (generated)
 ```
 
@@ -80,13 +71,12 @@ cd surveillance_system
 
 # Build
 mkdir build && cd build
-cmake ..
 make
 
 # Run
-./surveillance_system
+sudo .build/bin/surveillance_system
 ```
-
+<!--
 ### macOS
 ```bash
 # Install dependencies
@@ -100,6 +90,7 @@ cmake ..
 make
 ./surveillance_system
 ```
+-->
 
 ## Quick Start
 ```cpp
@@ -115,7 +106,7 @@ int main() {
     system.addCamera(usbCam);
 
     // Add IP camera
-    auto ipCam = std::make_shared<IPCamera>("cam2", "Backyard", "192.168.1.100");
+    auto ipCam = std::make_shared<IPCamera>("cam2", "Backyard", "your.IP.addr.ess");
     ipCam->setCredentials("admin", "password");
     system.addCamera(ipCam);
 
@@ -142,7 +133,7 @@ cam.connect();
 cam.captureFrame();
 
 // IP Camera
-IPCamera cam("id", "name", "192.168.1.100", 554);
+IPCamera cam("id", "name", "your.IP.addr.ess", 554);
 cam.setCredentials("user", "pass");
 cam.connect();
 ```
@@ -164,7 +155,7 @@ system.startRecording(cameraId, filename);
 system.start();
 ```
 
-## Configuration
+## Configuration (Optinonal, may modify the main.cpp)
 
 Create a `config.json` file:
 ```json
@@ -180,11 +171,11 @@ Create a `config.json` file:
     {
       "id": "backyard",
       "type": "ip",
-      "address": "192.168.1.100",
+      "address": "your.IP.addr.ess",
       "port": 554,
       "username": "admin",
       "password": "password",
-      "stream_url": "rtsp://192.168.1.100:554/stream"
+      "stream_url": "rtsp://your.IP.addr.ess:port/stream1"
     }
   ],
   "motion_detection": {
@@ -220,7 +211,7 @@ Create a `config.json` file:
    │ (Base) │ └──────┘ └──────┘
    └────────┘
 ```
-
+<!--
 ## Testing
 ```bash
 cd build
@@ -230,6 +221,7 @@ ctest --verbose
 ./tests/test_camera
 ./tests/test_manager
 ```
+-->
 
 ## Contributing
 
@@ -240,13 +232,13 @@ ctest --verbose
 5. Open a Pull Request
 
 ## Roadmap
-- [ ]  📼 **Video Recording**: Automatic recording with motion triggers
+- [v]  📼 **Video Recording**: Automatic recording with motion triggers
 - [ ] Cloud storage integration
 - [ ] Email/SMS alerts on motion detection
 - [ ] Web interface for remote monitoring
 - [ ] AI-based object detection
 - [ ] H.265/HEVC codec support
-- [ ] Multi-zone motion detection
+- [v] Multi-zone motion detection
 - [ ] Face recognition
 - [ ] Mobile app integration
 
